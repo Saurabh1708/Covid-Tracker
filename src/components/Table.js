@@ -64,9 +64,9 @@ const Table = ({states}) => {
             </thead>
             <tbody>
                 {
-                     items.map( (i) => {
+                     items.map( (i, index) => {
                         return (
-                         <tr >
+                         <tr key= {index}>
                            <td><a href= {`/states/${i["name"]}`}>{stateNames[i["name"]]?stateNames[i["name"]] : i["name"] }</a></td>
                            <td>{ i["cnf"]}</td>
                            <td>{ i["act"]}</td>

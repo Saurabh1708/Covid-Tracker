@@ -1,8 +1,11 @@
-//import Header from "./components/Header"
 import {useState, useEffect} from 'react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import Cases from "./components/Cases"
 import Table from "./components/Table"
+import SearchBar from "./components/SearchBar"
+import StateList from "./components/StateList"
+
+
 const stateNames={
   "AN":"Andaman and Nicobar Islands",
   "AP":"Andhra Pradesh",
@@ -41,6 +44,12 @@ const stateNames={
   "UT":"Uttarakhand",
   "WB":"West Bengal"
 }
+const list= Object.keys(stateNames).map( (s)=>{
+  return stateNames[s];
+})
+
+
+
 const App= ()=>{
 
   const [stateData, setStateData] = useState([]);
@@ -48,6 +57,10 @@ const App= ()=>{
   const [districtTotalData, setDistrictTotalData] = useState([]);
   const [districtData, setDistrictData]= useState([]);
  
+  const [input, setInput] = useState("");
+  const [stateListDefault, setStateListDefault] = useState(list);
+  const [stateList, setStateList] = useState();
+
   const getTotalData =  (states)=>{
     let confirmed =0, deceased=0, active= 0,recovered=0;
     //console.log(states); 
@@ -92,7 +105,7 @@ const App= ()=>{
     let hoursDifference = Math.floor(difference/1000/60/60);
     return hoursDifference;
 
-}
+  }
 
   const updateCache = (data)=>{
     const prevtime= new Date();
@@ -118,6 +131,16 @@ const App= ()=>{
       }
     }
 
+  }
+
+  const updateInput =  (input)=>{
+    //console.log(stateListDefault);
+    const filtered= stateListDefault.filter(s =>{
+      return s.toLowerCase().includes(input.toLowerCase());
+    })
+    console.log("filtered", filtered);
+    setInput(input);
+    setStateList(filtered);
   }
 
 
@@ -149,6 +172,8 @@ const App= ()=>{
     
   },[]);
 
+
+
   // Fetching the states
   const fetchStates= async ()=>{
     const url= "https://api.covid19india.org/v4/min/data.min.json";
@@ -165,9 +190,8 @@ const App= ()=>{
 
         <div className="container" style= {{textAlign: "center"}}>
         <h1>Covid Tracker</h1>
-        <input type="text" placeholder="Search your State"/>
-
-      <Route pa/>
+        <SearchBar input ={input} handleChange={e=> updateInput(e.target.value)} />
+        <StateList states= {stateList} />
 
         <Route path= "/" exact render= {(props) =>(
             <>
@@ -210,9 +234,4 @@ const App= ()=>{
     
   )
 }
-
 export default App;
-/*
- 
-
-*/
